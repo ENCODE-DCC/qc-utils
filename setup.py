@@ -4,7 +4,7 @@ with open('README.md') as f:
     long_description = f.read()
 
 setuptools.setup(
-    name='qc-utils',
+    name='qc_utils',
     version='0.1dev',
     packages=setuptools.find_packages(),
     license='MIT',
