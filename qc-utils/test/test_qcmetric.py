@@ -75,4 +75,4 @@ class TestQCMetricRecord(TestCase):
         metrics = [self.obj_a1, self.obj_b]
         record = qcmetric.QCMetricRecord(metrics)
         self.assertEqual(record.__repr__(),
-                         "QCMetric([QCMetric('a', OrderedDict([(1, 2)])), QCMetric('b', OrderedDict([(3, 4)]))])")
+                         "QCMetricRecord([QCMetric('a', OrderedDict([(1, 2)])), QCMetric('b', OrderedDict([(3, 4)]))])")

@@ -104,4 +104,4 @@ class QCMetricRecord(object):
         """
         Like __iter__, __repr__ is delegated to metrics.
         """
-        return 'QCMetric(%s)' % self.metrics.__repr__()
+        return 'QCMetricRecord(%s)' % self.metrics.__repr__()
