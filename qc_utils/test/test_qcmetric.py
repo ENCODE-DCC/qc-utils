@@ -1,4 +1,4 @@
-import qcmetric
+from qc_utils import qcmetric
 from unittest import TestCase
 from collections import OrderedDict
 
