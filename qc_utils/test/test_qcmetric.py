@@ -37,6 +37,8 @@ class TestQCMetricRecord(TestCase):
         self.obj_a1 = qcmetric.QCMetric('a', {1: 2})
         self.obj_a2 = qcmetric.QCMetric('a', {2: 3})
         self.obj_b = qcmetric.QCMetric('b', {3: 4})
+        self.obj_c = qcmetric.QCMetric('c', {1: 2, 3: 4, 5: 6})
+        self.obj_d = qcmetric.QCMetric('d', {'a': 'b'})
         self.qc_record = qcmetric.QCMetricRecord()
 
     def test_init_from_list_not_unique(self):
@@ -54,6 +56,23 @@ class TestQCMetricRecord(TestCase):
         self.assertEqual(len(self.qc_record), 0)
         self.qc_record.add(self.obj_a1)
         self.assertEqual(len(self.qc_record), 1)
+
+    def test_add_all_to_empty(self):
+        metrics = [self.obj_a1, self.obj_b]
+        self.qc_record.add_all(metrics)
+        self.assertEqual(len(self.qc_record), 2)
+
+    def test_add_all_to_nonempty_success(self):
+        metrics = [self.obj_a1, self.obj_b]
+        record = qcmetric.QCMetricRecord(metrics)
+        record.add_all([self.obj_c, self.obj_d])
+        self.assertEqual(len(record), 4)
+
+    def test_add_all_failure_because_not_unique(self):
+        record = qcmetric.QCMetricRecord([self.obj_a1])
+        with self.assertRaises(AssertionError):
+            record.add_all([self.obj_b, self.obj_a2])
+        self.assertEqual(len(record), 1)
 
     def test_add_raises_error_when_add_same_twice(self):
         self.qc_record.add(self.obj_a1)
