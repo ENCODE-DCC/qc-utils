@@ -1,4 +1,3 @@
-
 from bisect import insort
 from collections import OrderedDict
 
@@ -70,6 +69,23 @@ class QCMetricRecord(object):
         assert qc_metric not in self._metrics, 'Metric with name {} already in record'.format(
             qc_metric.name)
         insort(self._metrics, qc_metric)
+
+    def add_all(self, qc_metric_container):
+        """Adds all metrics from qc_metric_container preserving uniquness of names and order.
+        If the names in the qc_metric_container are not unique, raises AssertionError and leaves
+        the QCMetricRecord unmodified.
+        Args:
+            qc_metric_container: list (or a container that can be converted into a list) of QCMetrics
+        Returns: None
+
+        Raises: AssertionError if adding would break the uniqueness of names in self.
+        """
+        qc_metric_list = list(qc_metric_container)
+        for metric in qc_metric_list:
+            assert metric not in self._metrics, 'Metric with name {} already in record. Nothing from the container added'.format(
+                metric.name)
+        for metric in qc_metric_list:
+            self.add(metric)
 
     def to_ordered_dict(self):
         """Returns an OrderedDict with the contents.
