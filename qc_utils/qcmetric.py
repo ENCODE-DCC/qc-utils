@@ -23,6 +23,9 @@ class QCMetric(object):
     """Container that holds the qc metric as OrderedDict (sorted by keys of
     the input dict) and the "master" key (name) of the said qc metric. Can be
     instantiated from a regular dict.
+    If you want a custom order of items, instantiate from an OrderedDict
+    to skip sorting by keys and keep the original order (or pass a parser
+    that returns an OrderedDict instead of a vanilla one).
     """
 
     def __init__(self, qc_metric_name, qc_metric_content, parser=None):
@@ -33,8 +36,11 @@ class QCMetric(object):
         if not isinstance(qc_metric_dict, dict):
             raise TypeError('QCMetric data must be a dict.')
         self._name = qc_metric_name
-        self._content = OrderedDict(
-            sorted(qc_metric_dict.items(), key=lambda x: x[0]))
+        if isinstance(qc_metric_dict, dict) and not isinstance(qc_metric_dict, OrderedDict):
+            self._content = OrderedDict(
+                sorted(qc_metric_dict.items(), key=lambda x: x[0]))
+        else:
+            self._content = OrderedDict(qc_metric_dict)
 
     @property
     def content(self):

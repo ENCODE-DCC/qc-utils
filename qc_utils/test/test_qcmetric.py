@@ -42,6 +42,9 @@ STAR_LOG = '''                                 Started job on | Feb 16 23:45:04
 
 
 class TestQCMetric(TestCase):
+    def setUp(self):
+        self.ordered = OrderedDict([(2, 'a'), (1, 'b')])
+
     def test_type_check(self):
         with self.assertRaises(TypeError):
             qcmetric.QCMetric('name', 1)
@@ -68,6 +71,10 @@ class TestQCMetric(TestCase):
         obj = qcmetric.QCMetric('a', {1: 'x'})
         self.assertEqual(obj.__repr__(),
                          "QCMetric('a', OrderedDict([(1, 'x')]))")
+
+    def test_retains_order_when_created_from_OrderedDict(self):
+        qc_obj = qcmetric.QCMetric('name', self.ordered)
+        self.assertEqual(qc_obj.content, self.ordered)
 
 
 class TestQCMetricRecord(TestCase):
@@ -141,3 +148,9 @@ class TestParsers(TestCase):
     def test_parse_starlog(self, mock_open):
         star_log_dict = qcmetric.parse_starlog('path')
         self.assertEqual(len(star_log_dict), 29)
+
+    def test_raises_error_if_parser_is_invalid(self):
+        def invalid_parser(path_to_content):
+            return [1, 2, 3]
+        with self.assertRaises(TypeError):
+            qcmetric.QCMetric('name', 'path_to_content', invalid_parser)
