@@ -2,13 +2,34 @@ from bisect import insort
 from collections import OrderedDict
 
 
+# Parser functions
+def parse_starlog(path_to_log):
+    """Parse star logfile into a dict.
+    Args:
+        path_to_log: filepath containing the star run log
+    Returns:
+        dict that contains metrics from star log
+    """
+    qc_dict = {}
+    with open(path_to_log) as f:
+        for line in f:
+            if '|' in line:
+                tokens = line.split('|')
+                qc_dict[tokens[0].strip()] = tokens[1].strip()
+    return qc_dict
+
+
 class QCMetric(object):
     """Container that holds the qc metric as OrderedDict (sorted by keys of
     the input dict) and the "master" key (name) of the said qc metric. Can be
     instantiated from a regular dict.
     """
 
-    def __init__(self, qc_metric_name, qc_metric_dict):
+    def __init__(self, qc_metric_name, qc_metric_content, parser=None):
+        if parser is not None:
+            qc_metric_dict = parser(qc_metric_content)
+        else:
+            qc_metric_dict = qc_metric_content
         if not isinstance(qc_metric_dict, dict):
             raise TypeError('QCMetric data must be a dict.')
         self._name = qc_metric_name
