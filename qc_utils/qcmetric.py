@@ -1,4 +1,3 @@
-
 from bisect import insort
 from collections import OrderedDict
 
@@ -7,14 +6,24 @@ class QCMetric(object):
     """Container that holds the qc metric as OrderedDict (sorted by keys of
     the input dict) and the "master" key (name) of the said qc metric. Can be
     instantiated from a regular dict.
+    If you want a custom order of items, instantiate from an OrderedDict
+    to skip sorting by keys and keep the original order (or pass a parser
+    that returns an OrderedDict instead of a vanilla one).
     """
 
-    def __init__(self, qc_metric_name, qc_metric_dict):
+    def __init__(self, qc_metric_name, qc_metric_content, parser=None):
+        if parser is not None:
+            qc_metric_dict = parser(qc_metric_content)
+        else:
+            qc_metric_dict = qc_metric_content
         if not isinstance(qc_metric_dict, dict):
             raise TypeError('QCMetric data must be a dict.')
         self._name = qc_metric_name
-        self._content = OrderedDict(
-            sorted(qc_metric_dict.items(), key=lambda x: x[0]))
+        if isinstance(qc_metric_dict, dict) and not isinstance(qc_metric_dict, OrderedDict):
+            self._content = OrderedDict(
+                sorted(qc_metric_dict.items(), key=lambda x: x[0]))
+        else:
+            self._content = OrderedDict(qc_metric_dict)
 
     @property
     def content(self):
@@ -70,6 +79,23 @@ class QCMetricRecord(object):
         assert qc_metric not in self._metrics, 'Metric with name {} already in record'.format(
             qc_metric.name)
         insort(self._metrics, qc_metric)
+
+    def add_all(self, qc_metric_container):
+        """Adds all metrics from qc_metric_container preserving uniquness of names and order.
+        If the names in the qc_metric_container are not unique, raises AssertionError and leaves
+        the QCMetricRecord unmodified.
+        Args:
+            qc_metric_container: list (or a container that can be converted into a list) of QCMetrics
+        Returns: None
+
+        Raises: AssertionError if adding would break the uniqueness of names in self.
+        """
+        qc_metric_list = list(qc_metric_container)
+        for metric in qc_metric_list:
+            assert metric not in self._metrics, 'Metric with name {} already in record. Nothing from the container added'.format(
+                metric.name)
+        for metric in qc_metric_list:
+            self.add(metric)
 
     def to_ordered_dict(self):
         """Returns an OrderedDict with the contents.
