@@ -1,11 +1,11 @@
+import pytest
+
 from qc_utils import qcmetric
 from qc_utils import parsers
-from unittest import TestCase
-from collections import OrderedDict
 from io import StringIO
 from unittest.mock import patch
 
-STAR_LOG = '''                                 Started job on | Feb 16 23:45:04
+STAR_LOG = """                                 Started job on | Feb 16 23:45:04
                          Started mapping on |   Feb 16 23:49:02
                                 Finished on |   Feb 17 00:16:34
    Mapping speed, Million of reads per hour |   115.09
@@ -38,18 +38,18 @@ STAR_LOG = '''                                 Started job on | Feb 16 23:45:04
                  % of reads unmapped: other |   0.03%
                               CHIMERIC READS:
                    Number of chimeric reads |   0
-                        % of chimeric reads |   0.00%'''
+                        % of chimeric reads |   0.00%"""
 
 
-class TestParsers(TestCase):
+@patch("builtins.open", return_value=StringIO(STAR_LOG))
+def test_parse_starlog(mock_open):
+    star_log_dict = parsers.parse_starlog("path")
+    assert len(star_log_dict) == 29
 
-    @patch('builtins.open', return_value=StringIO(STAR_LOG))
-    def test_parse_starlog(self, mock_open):
-        star_log_dict = parsers.parse_starlog('path')
-        self.assertEqual(len(star_log_dict), 29)
 
-    def test_raises_error_if_parser_is_invalid(self):
-        def invalid_parser(path_to_content):
-            return [1, 2, 3]
-        with self.assertRaises(TypeError):
-            qcmetric.QCMetric('name', 'path_to_content', invalid_parser)
+def test_raises_error_if_parser_is_invalid():
+    def invalid_parser(path_to_content):
+        return [1, 2, 3]
+
+    with pytest.raises(TypeError):
+        qcmetric.QCMetric("name", "path_to_content", invalid_parser)

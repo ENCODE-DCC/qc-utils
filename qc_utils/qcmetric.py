@@ -17,11 +17,14 @@ class QCMetric(object):
         else:
             qc_metric_dict = qc_metric_content
         if not isinstance(qc_metric_dict, dict):
-            raise TypeError('QCMetric data must be a dict.')
+            raise TypeError("QCMetric data must be a dict.")
         self._name = qc_metric_name
-        if isinstance(qc_metric_dict, dict) and not isinstance(qc_metric_dict, OrderedDict):
+        if isinstance(qc_metric_dict, dict) and not isinstance(
+            qc_metric_dict, OrderedDict
+        ):
             self._content = OrderedDict(
-                sorted(qc_metric_dict.items(), key=lambda x: x[0]))
+                sorted(qc_metric_dict.items(), key=lambda x: x[0])
+            )
         else:
             self._content = OrderedDict(qc_metric_dict)
 
@@ -40,7 +43,7 @@ class QCMetric(object):
         return self.name == other.name
 
     def __repr__(self):
-        return 'QCMetric(%r, %r)' % (self.name, self.content)
+        return "QCMetric(%r, %r)" % (self.name, self.content)
 
 
 class QCMetricRecord(object):
@@ -56,8 +59,7 @@ class QCMetricRecord(object):
         else:
             # names must be unique
             names = [metric.name for metric in metrics]
-            assert len(names) == len(
-                set(names)), 'Names of metrics have to be unique'
+            assert len(names) == len(set(names)), "Names of metrics have to be unique"
             metrics.sort()
             self._metrics = metrics
 
@@ -76,8 +78,9 @@ class QCMetricRecord(object):
         Raises: AssertionError if a metric with same name is already in record
         """
 
-        assert qc_metric not in self._metrics, 'Metric with name {} already in record'.format(
-            qc_metric.name)
+        assert (
+            qc_metric not in self._metrics
+        ), "Metric with name {} already in record".format(qc_metric.name)
         insort(self._metrics, qc_metric)
 
     def add_all(self, qc_metric_container):
@@ -92,8 +95,11 @@ class QCMetricRecord(object):
         """
         qc_metric_list = list(qc_metric_container)
         for metric in qc_metric_list:
-            assert metric not in self._metrics, 'Metric with name {} already in record. Nothing from the container added'.format(
-                metric.name)
+            assert (
+                metric not in self._metrics
+            ), "Metric with name {} already in record. Nothing from the container added".format(
+                metric.name
+            )
         for metric in qc_metric_list:
             self.add(metric)
 
@@ -130,4 +136,4 @@ class QCMetricRecord(object):
         """
         Like __iter__, __repr__ is delegated to metrics.
         """
-        return 'QCMetricRecord(%s)' % self.metrics.__repr__()
+        return "QCMetricRecord(%s)" % self.metrics.__repr__()
