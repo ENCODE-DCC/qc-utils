@@ -1,9 +1,8 @@
-import pytest
-
-from qc_utils import qcmetric
-from qc_utils import parsers
 from io import StringIO
 from unittest.mock import patch
+
+import pytest
+from qc_utils import parsers, qcmetric
 
 STAR_LOG = """                                 Started job on | Feb 16 23:45:04
                          Started mapping on |   Feb 16 23:49:02
