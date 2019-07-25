@@ -1,104 +1,149 @@
+import pytest
+
 from qc_utils import QCMetric, QCMetricRecord
-from unittest import TestCase
 from collections import OrderedDict
 
 
-class TestQCMetric(TestCase):
-    def setUp(self):
-        self.ordered = OrderedDict([(2, 'a'), (1, 'b')])
-
-    def test_type_check(self):
-        with self.assertRaises(TypeError):
-            QCMetric('name', 1)
-
-    def test_get_name(self):
-        qc_obj = QCMetric('a', {})
-        self.assertEqual(qc_obj.name, 'a')
-
-    def test_get_content(self):
-        qc_obj = QCMetric('_', {2: 'a', 1: 'b'})
-        self.assertEqual(qc_obj.content, OrderedDict([(1, 'b'), (2, 'a')]))
-
-    def test_less_than(self):
-        smaller_obj = QCMetric(1, {})
-        bigger_obj = QCMetric(2, {})
-        self.assertTrue(smaller_obj < bigger_obj)
-
-    def test_equals(self):
-        first_obj = QCMetric('a', {})
-        second_obj = QCMetric('a', {'x': 'y'})
-        self.assertTrue(first_obj == second_obj)
-
-    def test_repr(self):
-        obj = QCMetric('a', {1: 'x'})
-        self.assertEqual(obj.__repr__(),
-                         "QCMetric('a', OrderedDict([(1, 'x')]))")
-
-    def test_retains_order_when_created_from_OrderedDict(self):
-        qc_obj = QCMetric('name', self.ordered)
-        self.assertEqual(qc_obj.content, self.ordered)
+@pytest.fixture
+def ordered():
+    return OrderedDict([(2, "a"), (1, "b")])
 
 
-class TestQCMetricRecord(TestCase):
-    def setUp(self):
-        self.obj_a1 = QCMetric('a', {1: 2})
-        self.obj_a2 = QCMetric('a', {2: 3})
-        self.obj_b = QCMetric('b', {3: 4})
-        self.obj_c = QCMetric('c', {1: 2, 3: 4, 5: 6})
-        self.obj_d = QCMetric('d', {'a': 'b'})
-        self.qc_record = QCMetricRecord()
+@pytest.fixture
+def obj_a1():
+    return QCMetric("a", {1: 2})
 
-    def test_init_from_list_not_unique(self):
-        metrics = [self.obj_a1, self.obj_a2]
-        with self.assertRaises(AssertionError):
-            QCMetricRecord(metrics)
 
-    def test_init_from_list_success(self):
-        metrics = [self.obj_a1, self.obj_b]
-        record = QCMetricRecord(metrics)
-        self.assertEqual(record.metrics[0], self.obj_a1)
-        self.assertEqual(record.metrics[1], self.obj_b)
+@pytest.fixture
+def obj_a2():
+    return QCMetric("a", {2: 3})
 
-    def test_add(self):
-        self.assertEqual(len(self.qc_record), 0)
-        self.qc_record.add(self.obj_a1)
-        self.assertEqual(len(self.qc_record), 1)
 
-    def test_add_all_to_empty(self):
-        metrics = [self.obj_a1, self.obj_b]
-        self.qc_record.add_all(metrics)
-        self.assertEqual(len(self.qc_record), 2)
+@pytest.fixture
+def obj_b():
+    return QCMetric("b", {3: 4})
 
-    def test_add_all_to_nonempty_success(self):
-        metrics = [self.obj_a1, self.obj_b]
-        record = QCMetricRecord(metrics)
-        record.add_all([self.obj_c, self.obj_d])
-        self.assertEqual(len(record), 4)
 
-    def test_add_all_failure_because_not_unique(self):
-        record = QCMetricRecord([self.obj_a1])
-        with self.assertRaises(AssertionError):
-            record.add_all([self.obj_b, self.obj_a2])
-        self.assertEqual(len(record), 1)
+@pytest.fixture
+def obj_c():
+    return QCMetric("c", {1: 2, 3: 4, 5: 6})
 
-    def test_add_raises_error_when_add_same_twice(self):
-        self.qc_record.add(self.obj_a1)
-        with self.assertRaises(AssertionError):
-            self.qc_record.add(self.obj_a1)
 
-    def test_add_raises_error_when_add_with_same_name(self):
-        self.qc_record.add(self.obj_a1)
-        with self.assertRaises(AssertionError):
-            self.qc_record.add(self.obj_a2)
+@pytest.fixture
+def obj_d():
+    return QCMetric("d", {"a": "b"})
 
-    def test_to_ordered_dict(self):
-        self.qc_record.add(self.obj_a1)
-        self.qc_record.add(self.obj_b)
-        qc_dict = self.qc_record.to_ordered_dict()
-        self.assertEqual(qc_dict, OrderedDict([('a', {1: 2}), ('b', {3: 4})]))
 
-    def test_repr(self):
-        metrics = [self.obj_a1, self.obj_b]
-        record = QCMetricRecord(metrics)
-        self.assertEqual(record.__repr__(),
-                         "QCMetricRecord([QCMetric('a', OrderedDict([(1, 2)])), QCMetric('b', OrderedDict([(3, 4)]))])")
+@pytest.fixture
+def qc_record():
+    return QCMetricRecord()
+
+
+# Test QCMetric
+
+
+def test_type_check():
+    with pytest.raises(TypeError):
+        QCMetric("name", 1)
+
+
+def test_get_name():
+    qc_obj = QCMetric("a", {})
+    assert qc_obj.name == "a"
+
+
+def test_get_content():
+    qc_obj = QCMetric("_", {2: "a", 1: "b"})
+    assert qc_obj.content == OrderedDict([(1, "b"), (2, "a")])
+
+
+def test_less_than():
+    smaller_obj = QCMetric(1, {})
+    bigger_obj = QCMetric(2, {})
+    assert smaller_obj < bigger_obj
+
+
+def test_equals():
+    first_obj = QCMetric("a", {})
+    second_obj = QCMetric("a", {"x": "y"})
+    assert first_obj == second_obj
+
+
+def test_QCMetric_repr():
+    obj = QCMetric("a", {1: "x"})
+    assert obj.__repr__() == "QCMetric('a', OrderedDict([(1, 'x')]))"
+
+
+def test_retains_order_when_created_from_OrderedDict(ordered):
+    qc_obj = QCMetric("name", ordered)
+    assert qc_obj.content == ordered
+
+
+# Test QCMetricRecord
+
+
+def test_init_from_list_not_unique(obj_a1, obj_a2):
+    metrics = [obj_a1, obj_a2]
+    with pytest.raises(AssertionError):
+        QCMetricRecord(metrics)
+
+
+def test_init_from_list_success(obj_a1, obj_b):
+    metrics = [obj_a1, obj_b]
+    record = QCMetricRecord(metrics)
+    assert record.metrics[0] is obj_a1
+    assert record.metrics[1] is obj_b
+
+
+def test_add(qc_record, obj_a1):
+    assert len(qc_record) == 0
+    qc_record.add(obj_a1)
+    assert len(qc_record) == 1
+
+
+def test_add_all_to_empty(qc_record, obj_a1, obj_b):
+    metrics = [obj_a1, obj_b]
+    qc_record.add_all(metrics)
+    assert len(qc_record) == 2
+
+
+def test_add_all_to_nonempty_success(qc_record, obj_a1, obj_b, obj_c, obj_d):
+    metrics = [obj_a1, obj_b]
+    record = QCMetricRecord(metrics)
+    record.add_all([obj_c, obj_d])
+    assert len(record) == 4
+
+
+def test_add_all_failure_because_not_unique(obj_a1, obj_a2, obj_b):
+    record = QCMetricRecord([obj_a1])
+    with pytest.raises(AssertionError):
+        record.add_all([obj_b, obj_a2])
+    assert len(record) == 1
+
+
+def test_add_raises_error_when_add_same_twice(qc_record, obj_a1):
+    qc_record.add(obj_a1)
+    with pytest.raises(AssertionError):
+        qc_record.add(obj_a1)
+
+
+def test_add_raises_error_when_add_with_same_name(qc_record, obj_a1, obj_a2):
+    qc_record.add(obj_a1)
+    with pytest.raises(AssertionError):
+        qc_record.add(obj_a2)
+
+
+def test_to_ordered_dict(qc_record, obj_a1, obj_b):
+    qc_record.add(obj_a1)
+    qc_record.add(obj_b)
+    qc_dict = qc_record.to_ordered_dict()
+    assert qc_dict == OrderedDict([("a", {1: 2}), ("b", {3: 4})])
+
+
+def test_QCMetricRecord_repr(obj_a1, obj_b):
+    metrics = [obj_a1, obj_b]
+    record = QCMetricRecord(metrics)
+    assert (
+        record.__repr__()
+        == "QCMetricRecord([QCMetric('a', OrderedDict([(1, 2)])), QCMetric('b', OrderedDict([(3, 4)]))])"
+    )
