@@ -1,6 +1,7 @@
 from collections import OrderedDict
 
 import pytest
+
 from qc_utils import QCMetric, QCMetricRecord
 
 
