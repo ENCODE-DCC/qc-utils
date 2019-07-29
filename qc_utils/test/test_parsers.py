@@ -59,6 +59,13 @@ def test_parse_starlog(mock_open):
     assert len(star_log_dict) == 29
 
 
+def test_percentage_to_float():
+    percentage_line = "94.67%"
+    formatted = parsers.percentage_to_float(percentage_line)
+    assert isinstance(formatted, float)
+    assert formatted == 94.67
+
+
 @patch("builtins.open", return_value=StringIO(SAMTOOLS_FLAGSTAT))
 def test_parse_flagstats(mock_open):
     flagstat_dict = parsers.parse_flagstats("path")
