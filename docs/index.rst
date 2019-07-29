@@ -1,5 +1,5 @@
 .. qc-utils documentation master file, created by
-   sphinx-quickstart on Mon Jul 29 15:28:50 2019.
+   sphinx-quickstart on Mon Jul 29 15:38:48 2019.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
