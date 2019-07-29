@@ -75,11 +75,6 @@ def test_QCMetric_repr():
     assert obj.__repr__() == "QCMetric('a', OrderedDict([(1, 'x')]))"
 
 
-def test_retains_order_when_created_from_OrderedDict(ordered):
-    qc_obj = QCMetric("name", ordered)
-    assert qc_obj.content == ordered
-
-
 # Test QCMetricRecord
 
 
