@@ -29,6 +29,9 @@ class QCMetric(object):
     def name(self):
         return self._name
 
+    def __len__(self):
+        return len(self._content)
+
     def __lt__(self, other):
         return self.name < other.name
 

@@ -58,6 +58,14 @@ def test_get_content():
     assert qc_obj.content == OrderedDict([(1, "b"), (2, "a")])
 
 
+def test_len_0():
+    assert len(QCMetric("a", {})) == 0
+
+
+def test_len_1(obj_a1):
+    assert len(obj_a1) == 1
+
+
 def test_less_than():
     smaller_obj = QCMetric(1, {})
     bigger_obj = QCMetric(2, {})
