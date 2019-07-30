@@ -22,3 +22,9 @@ Installation
 .. code-block:: console
 
     $ pip install qc-utils
+
+
+Project Information
+====================
+
+``qc-utils`` is released under the `MIT <https://choosealicense.com/licenses/mit/>`_ license, documentation lives in `readthedocs <https://qc-utils.readthedocs.io/en/latest/>`_, code is hosted on `github <https://github.com/ENCODE-DCC/qc-utils>`_ and the releases on `PyPI <https://pypi.org/project/qc-utils/>`_.
