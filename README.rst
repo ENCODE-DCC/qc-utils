@@ -6,8 +6,9 @@
     :target: https://github.com/ambv/black
     :alt: Code Style: Black
 
-.. |MIT license| image:: https://img.shields.io/badge/License-MIT-blue.svg
+.. image:: https://img.shields.io/badge/License-MIT-blue.svg
    :target: https://lbesson.mit-license.org/
+   :alt: License: MIT
 
 .. short-intro-begin
 
