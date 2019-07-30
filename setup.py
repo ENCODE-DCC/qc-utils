@@ -1,6 +1,6 @@
 import setuptools
 
-with open("README.md") as f:
+with open("README.rst") as f:
     long_description = f.read()
 
 setuptools.setup(
@@ -11,7 +11,7 @@ setuptools.setup(
     author="Otto Jolanki",
     author_email="ojolanki@stanford.edu",
     long_description=long_description,
-    long_description_content_type="text/markdown",
+    long_description_content_type="text/x-rst",
     url="https://github.com/encode-dcc/qc-utils",
     classifiers=[
         "Programming Language :: Python :: 3",

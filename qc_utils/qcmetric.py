@@ -6,9 +6,6 @@ class QCMetric(object):
     """Container that holds the qc metric as OrderedDict (sorted by keys of
     the input dict) and the "master" key (name) of the said qc metric. Can be
     instantiated from a regular dict.
-    If you want a custom order of items, instantiate from an OrderedDict
-    to skip sorting by keys and keep the original order (or pass a parser
-    that returns an OrderedDict instead of a vanilla one).
     """
 
     def __init__(self, qc_metric_name, qc_metric_content, parser=None):
