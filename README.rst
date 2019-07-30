@@ -14,3 +14,9 @@
 ``qc-utils`` is a python package that provides ``QCMetric`` and ``QCMetricRecord`` classes that can be used for representing ENCODE pipeline quality control metrics.
 
 .. short-intro-end
+
+Installation
+==============
+
+.. code-block:: console
+    $ pip install qc-utils
