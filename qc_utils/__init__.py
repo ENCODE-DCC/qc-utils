@@ -1,7 +1,7 @@
 from qc_utils.qcmetric import QCMetric, QCMetricRecord
 
 __title__ = "qc-utils"
-__version__ = "0.2.dev"
+__version__ = "0.2.dev0"
 __description__ = "Tool for representing ENCODE QC metrics"
 __url__ = "https://github.com/ENCODE-DCC/qc-utils"
 __uri__ = __url__
