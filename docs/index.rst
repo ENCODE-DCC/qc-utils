@@ -16,6 +16,24 @@ Getting Started
 
    $ pip install qc-utils
 
+Usage
+=======
+
+The basic pattern is to create ``QCMetric`` objects, and then add related ones to a ``QCMetricRecord``. ``QCMetric`` objects can be created directly from dicts, or from files. Supported parsers are for now for samtools flagstats and for STAR log. You can also write your own: provide a function that takes a filepath as input and returns a dict.
+
+Examples
+---------
+
+To create directly from dicts:
+::
+
+    from qc_utils import QCMetric, QCMetricRecord
+
+    record = QCMetricRecord()
+    obj1 = QCMetric('first_metric', {'metric1': 1, 'metric2': 2})
+    record.add(obj1)
+
+
 Table of Contents
 ==================
 
