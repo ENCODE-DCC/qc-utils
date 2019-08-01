@@ -1,3 +1,4 @@
+import os
 import re
 from pathlib import Path
 
@@ -29,7 +30,7 @@ EXTRAS_REQUIRE = {"docs": ["sphinx"], "tests": ["pytest", "pytest-cov"]}
 EXTRAS_REQUIRE["dev"] = (
     EXTRAS_REQUIRE["docs"] + EXTRAS_REQUIRE["tests"] + ["pre-commit"]
 )
-HERE = Path.cwd()
+HERE = os.path.abspath(os.path.dirname(__file__))
 
 
 def read(*parts):

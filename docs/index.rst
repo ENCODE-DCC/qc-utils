@@ -30,8 +30,31 @@ To create directly from dicts:
     from qc_utils import QCMetric, QCMetricRecord
 
     record = QCMetricRecord()
-    obj1 = QCMetric('first_metric', {'metric1': 1, 'metric2': 2})
-    record.add(obj1)
+    qc_obj = QCMetric('first_metric', {'metric1': 1, 'metric2': 2})
+    record.add(qc_obj)
+
+To create from a STAR log file in ``/path/to/star_Log.out``:
+::
+
+    from qc_utils import QCMetric, QCMetricRecord
+    from qc_utils.parsers import parse_starlog
+    record = QCMetricRecord()
+    log_qc_obj = QCMetric("starlogQC", "/path/to/star_Log.out", parser=parse_starlog)
+    record.add(log_qc_obj)
+
+To create from a samtools flagstats file in ``/path/to/flagstats.txt`` and write into a ``json``-object in ``/path/to/flagstats.json``:
+::
+
+    import json
+    from qc_utils import QCMetric, QCMetricRecord
+    from qc_utils.parsers import parse_flagstats
+
+    record = QCMetricRecord()
+    flagstat_qc_obj = QCMetric("flagstat", "/path/to/flagstats.txt", parser=parse_flagstats)
+    record.add(flagstat_qc_obj)
+    with open("/path/to/flagstats.json", "w") as fp:
+        json.dump(record.to_ordered_dict(), fp)
+
 
 
 Table of Contents
