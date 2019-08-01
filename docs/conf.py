@@ -1,28 +1,45 @@
-# Configuration file for the Sphinx documentation builder.
-#
-# This file only contains a selection of the most common options. For a full
-# list see the documentation:
-# http://www.sphinx-doc.org/en/master/config
+import os
+import re
+from pathlib import Path
 
-# -- Path setup --------------------------------------------------------------
+HERE = os.path.abspath(os.path.dirname(__file__))
+META_PATH = Path("../qc_utils/__init__.py")
 
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
-#
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+
+def read(*parts):
+    """
+    Build an absolute path from *parts* and and return the contents of the
+    resulting file.  Assume UTF-8 encoding.
+    """
+    with Path(HERE, *parts).open(encoding="utf-8") as f:
+        return f.read()
+
+
+META_FILE = read(META_PATH)
+
+
+def find_meta(meta):
+    """
+    Extract __*meta*__ from META_FILE.
+    """
+    meta_match = re.search(
+        r"^__{meta}__ = ['\"]([^'\"]*)['\"]".format(meta=meta), META_FILE, re.M
+    )
+    if meta_match:
+        return meta_match.group(1)
+    raise RuntimeError("Unable to find __{meta}__ string.".format(meta=meta))
 
 
 # -- Project information -----------------------------------------------------
 
 project = "qc-utils"
-copyright = "2019, Otto Jolanki"
-author = "Otto Jolanki"
+copyright = "2018 ENCODE DCC"
+author = find_meta("author")
 
 # The full version, including alpha/beta/rc tags
-release = "0.2"
+release = find_meta("version")
+# Short n.k version
+version = release.rsplit(".", 1)[0]
 
 
 # -- General configuration ---------------------------------------------------
@@ -46,6 +63,7 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
+html_favicon = "_static/favicon.ico"
 html_theme = "alabaster"
 
 # Add any paths that contain custom static files (such as style sheets) here,
