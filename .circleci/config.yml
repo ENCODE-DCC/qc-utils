@@ -1,20 +1,30 @@
 version: 2.1
 
-defaults: &defaults
-  docker:
-    - image: circleci/buildpack-deps:xenial-scm
+machine_defaults: &machine_defaults
+  machine:
+    image: circleci/classic:latest
   working_directory: ~/qc-utils
 
 jobs:
   build:
-    <<: *defaults
+    <<: *machine_defaults
+
     steps:
       - checkout
       - run:
           name: activate pythos
           command: |
+            wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+            curl -L https://packagecloud.io/circleci/trusty/gpgkey | sudo apt-key add -
+            sudo apt-get update && sudo apt-get install -y libssl-dev
+            cd /opt/circleci/.pyenv/plugins/python-build/../.. && git pull && cd -
+            pyenv install 3.5.7 
+            pyenv install 3.6.8
+            pyenv install 3.8-dev
+            pyenv install pypy3.6-7.1.0
             pyenv versions
-            pyenv global 3.5.3 3.6.7 3.7.2
+            pyenv global 3.5.7 3.6.8 3.8-dev pypy3.6-7.1.0
+            pip install tox tox-pyenv
             echo "hello!"
 
 workflows:
