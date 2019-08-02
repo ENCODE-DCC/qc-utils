@@ -1,0 +1,23 @@
+version: 2.1
+
+defaults: &defaults
+  docker:
+    - image: circleci/buildpack-deps:xenial-scm
+  working_directory: ~/qc-utils
+
+jobs:
+  build:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: activate pythos
+          command: |
+            pyenv versions
+            pyenv global 3.5.3 3.6.7 3.7.2
+            echo "hello!"
+
+workflows:
+  build_workflow:
+    jobs:
+      - build
