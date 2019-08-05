@@ -136,3 +136,14 @@ workflows:
       - docs
       - pypi-description
       - coverage-report
+      - release_to_pypi:
+          <<: *master_only
+          requires:
+            - lint
+            - py35_unit
+            - py36_unit
+            - py37_unit
+            - py38_unit
+            - pypy3_unit
+            - docs
+            - coverage-report
