@@ -97,6 +97,19 @@ jobs:
       - run_tox:
           toxenv: "docs"
 
+  pypi-description:
+    <<: *py37
+    steps:
+      - checkout
+      - run_tox:
+          toxenv: "pypi-description"
+
+  coverage-report:
+    <<: *py37
+    steps:
+      - checkout
+      - run_tox:
+          toxenv: "coverage-report"
 
 
 workflows:
@@ -109,3 +122,5 @@ workflows:
       - py38_unit
       - pypy3_unit
       - docs
+      - pypi-description
+      - coverage-report
