@@ -21,6 +21,10 @@ py38: &py38
     - image: circleci/python:3.8.0b1-stretch
   working_directory: ~/qc-utils
 
+defaults: &defaults
+  docker:
+    - image: circleci/buildpack-deps:xenial-scm
+  working_directory: ~/qc-utils
 
 commands:
 
@@ -46,7 +50,6 @@ jobs:
     <<: *py36
     steps:
       - checkout
-      - run: sudo pip install --upgrade setuptools
       - run_tox:
           to: "py36"
 
@@ -64,6 +67,17 @@ jobs:
       - run_tox:
           to: "py38"
 
+  pypy3_unit:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          command: |
+            wget https://bitbucket.org/squeaky/portable-pypy/downloads/pypy3.6-7.1.1-beta-linux_x86_64-portable.tar.bz2
+            tar xjvf pypy3.6-7.1.1-beta-linux_x86_64-portable.tar.bz2
+            chmod 755 pypy3.6-7.1.1-beta-linux_x86_64-portable/bin/pypy3.6
+            sudo ln -s $PWD/pypy3.6-7.1.1-beta-linux_x86_64-portable/bin/pypy3.6 /usr/local/bin/pypy3
+            pypy3 --version
 
 workflows:
   build_workflow:
@@ -72,3 +86,5 @@ workflows:
       - py36_unit
       - py37_unit
       - py38_unit
+      - pypy3_unit
+
