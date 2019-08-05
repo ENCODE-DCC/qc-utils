@@ -68,7 +68,7 @@ jobs:
           to: "py38"
 
   pypy3_unit:
-    <<: *defaults
+    <<: *py37
     steps:
       - checkout
       - run:
