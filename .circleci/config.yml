@@ -39,6 +39,14 @@ commands:
 
 
 jobs:
+
+  lint:
+    <<: *py37
+    steps:
+      - checkout
+      - run_tox:
+          to: "lint"
+
   py35_unit:
     <<: *py35
     steps:
@@ -82,12 +90,14 @@ jobs:
       - run_tox:
           to: "pypy3"
 
+
+
 workflows:
   build_workflow:
     jobs:
+      - lint
       - py35_unit
       - py36_unit
       - py37_unit
       - py38_unit
       - pypy3_unit
-
