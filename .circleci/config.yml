@@ -73,7 +73,8 @@ jobs:
       - checkout
       - run:
           command: |
-            wget https://bitbucket.org/squeaky/portable-pypy/downloads/pypy3.6-7.1.1-beta-linux_x86_64-portable.tar.bz2
+            wget -P .. https://bitbucket.org/squeaky/portable-pypy/downloads/pypy3.6-7.1.1-beta-linux_x86_64-portable.tar.bz2
+            cd ..
             tar xjvf pypy3.6-7.1.1-beta-linux_x86_64-portable.tar.bz2
             chmod 755 pypy3.6-7.1.1-beta-linux_x86_64-portable/bin/pypy3.6
             sudo ln -s $PWD/pypy3.6-7.1.1-beta-linux_x86_64-portable/bin/pypy3.6 /usr/local/bin/pypy3
