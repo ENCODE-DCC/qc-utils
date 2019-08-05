@@ -1,11 +1,11 @@
-from qc_utils import qcmetric
-from qc_utils import parsers
-from unittest import TestCase
-from collections import OrderedDict
 from io import StringIO
 from unittest.mock import patch
 
-STAR_LOG = '''                                 Started job on | Feb 16 23:45:04
+import pytest
+
+from qc_utils import parsers, qcmetric
+
+STAR_LOG = """                                 Started job on | Feb 16 23:45:04
                          Started mapping on |   Feb 16 23:49:02
                                 Finished on |   Feb 17 00:16:34
    Mapping speed, Million of reads per hour |   115.09
@@ -38,18 +38,43 @@ STAR_LOG = '''                                 Started job on | Feb 16 23:45:04
                  % of reads unmapped: other |   0.03%
                               CHIMERIC READS:
                    Number of chimeric reads |   0
-                        % of chimeric reads |   0.00%'''
+                        % of chimeric reads |   0.00%"""
+
+SAMTOOLS_FLAGSTAT = """424886248 + 0 in total (QC-passed reads + QC-failed reads)
+0 + 0 duplicates
+413471158 + 0 mapped (97.31%:-nan%)
+424886248 + 0 paired in sequencing
+212443124 + 0 read1
+212443124 + 0 read2
+413471158 + 0 properly paired (97.31%:-nan%)
+413471158 + 0 with itself and mate mapped
+0 + 0 singletons (0.00%:-nan%)
+0 + 0 with mate mapped to a different chr
+0 + 0 with mate mapped to a different chr (mapQ>=5)"""
 
 
-class TestParsers(TestCase):
+@patch("builtins.open", return_value=StringIO(STAR_LOG))
+def test_parse_starlog(mock_open):
+    star_log_dict = parsers.parse_starlog("path")
+    assert len(star_log_dict) == 29
 
-    @patch('builtins.open', return_value=StringIO(STAR_LOG))
-    def test_parse_starlog(self, mock_open):
-        star_log_dict = parsers.parse_starlog('path')
-        self.assertEqual(len(star_log_dict), 29)
 
-    def test_raises_error_if_parser_is_invalid(self):
-        def invalid_parser(path_to_content):
-            return [1, 2, 3]
-        with self.assertRaises(TypeError):
-            qcmetric.QCMetric('name', 'path_to_content', invalid_parser)
+def test_percentage_to_float():
+    percentage_line = "94.67%"
+    formatted = parsers.percentage_to_float(percentage_line)
+    assert isinstance(formatted, float)
+    assert formatted == 94.67
+
+
+@patch("builtins.open", return_value=StringIO(SAMTOOLS_FLAGSTAT))
+def test_parse_flagstats(mock_open):
+    flagstat_dict = parsers.parse_flagstats("path")
+    assert len(flagstat_dict) == 23
+
+
+def test_raises_error_if_parser_is_invalid():
+    def invalid_parser(path_to_content):
+        return [1, 2, 3]
+
+    with pytest.raises(TypeError):
+        qcmetric.QCMetric("name", "path_to_content", invalid_parser)

@@ -6,9 +6,6 @@ class QCMetric(object):
     """Container that holds the qc metric as OrderedDict (sorted by keys of
     the input dict) and the "master" key (name) of the said qc metric. Can be
     instantiated from a regular dict.
-    If you want a custom order of items, instantiate from an OrderedDict
-    to skip sorting by keys and keep the original order (or pass a parser
-    that returns an OrderedDict instead of a vanilla one).
     """
 
     def __init__(self, qc_metric_name, qc_metric_content, parser=None):
@@ -17,13 +14,9 @@ class QCMetric(object):
         else:
             qc_metric_dict = qc_metric_content
         if not isinstance(qc_metric_dict, dict):
-            raise TypeError('QCMetric data must be a dict.')
+            raise TypeError("QCMetric data must be a dict.")
         self._name = qc_metric_name
-        if isinstance(qc_metric_dict, dict) and not isinstance(qc_metric_dict, OrderedDict):
-            self._content = OrderedDict(
-                sorted(qc_metric_dict.items(), key=lambda x: x[0]))
-        else:
-            self._content = OrderedDict(qc_metric_dict)
+        self._content = OrderedDict(sorted(qc_metric_dict.items(), key=lambda x: x[0]))
 
     @property
     def content(self):
@@ -33,6 +26,9 @@ class QCMetric(object):
     def name(self):
         return self._name
 
+    def __len__(self):
+        return len(self._content)
+
     def __lt__(self, other):
         return self.name < other.name
 
@@ -40,7 +36,7 @@ class QCMetric(object):
         return self.name == other.name
 
     def __repr__(self):
-        return 'QCMetric(%r, %r)' % (self.name, self.content)
+        return "QCMetric(%r, %r)" % (self.name, self.content)
 
 
 class QCMetricRecord(object):
@@ -56,10 +52,9 @@ class QCMetricRecord(object):
         else:
             # names must be unique
             names = [metric.name for metric in metrics]
-            assert len(names) == len(
-                set(names)), 'Names of metrics have to be unique'
-            metrics.sort()
-            self._metrics = metrics
+            assert len(names) == len(set(names)), "Names of metrics have to be unique"
+            self._metrics = metrics[:]
+            self._metrics.sort()
 
     @property
     def metrics(self):
@@ -76,8 +71,9 @@ class QCMetricRecord(object):
         Raises: AssertionError if a metric with same name is already in record
         """
 
-        assert qc_metric not in self._metrics, 'Metric with name {} already in record'.format(
-            qc_metric.name)
+        assert (
+            qc_metric not in self._metrics
+        ), "Metric with name {} already in record".format(qc_metric.name)
         insort(self._metrics, qc_metric)
 
     def add_all(self, qc_metric_container):
@@ -85,16 +81,18 @@ class QCMetricRecord(object):
         If the names in the qc_metric_container are not unique, raises AssertionError and leaves
         the QCMetricRecord unmodified.
         Args:
-            qc_metric_container: list (or a container that can be converted into a list) of QCMetrics
+            qc_metric_container: container of QCMetrics
         Returns: None
 
         Raises: AssertionError if adding would break the uniqueness of names in self.
         """
-        qc_metric_list = list(qc_metric_container)
-        for metric in qc_metric_list:
-            assert metric not in self._metrics, 'Metric with name {} already in record. Nothing from the container added'.format(
-                metric.name)
-        for metric in qc_metric_list:
+        for metric in qc_metric_container:
+            assert (
+                metric not in self._metrics
+            ), "Metric with name {} already in record. Nothing from the container added".format(
+                metric.name
+            )
+        for metric in qc_metric_container:
             self.add(metric)
 
     def to_ordered_dict(self):
@@ -110,7 +108,7 @@ class QCMetricRecord(object):
             }
         """
         result = OrderedDict()
-        for metric in self.metrics:
+        for metric in self._metrics:
             result.update({metric.name: metric.content})
         return result
 
@@ -118,16 +116,16 @@ class QCMetricRecord(object):
         """
         Delegated to metrics.
         """
-        return len(self.metrics)
+        return len(self._metrics)
 
     def __iter__(self):
         """
         Iterating QCMetricRecord is iterating over metrics.
         """
-        return iter(self.metrics)
+        return iter(self._metrics)
 
     def __repr__(self):
         """
         Like __iter__, __repr__ is delegated to metrics.
         """
-        return 'QCMetricRecord(%s)' % self.metrics.__repr__()
+        return "QCMetricRecord(%s)" % self._metrics.__repr__()
