@@ -1,5 +1,6 @@
 version: 2.1
 
+# default envs
 py35: &py35
   docker:
     - image: circleci/python:3.5.7-stretch
@@ -21,17 +22,36 @@ py38: &py38
   working_directory: ~/qc-utils
 
 
+commands:
+
+  run_tox:
+    description: "A very simple command for demonstration purposes"
+    parameters:
+      to:
+        type: string
+        default: "Hello World"
+    steps:
+      - run: sudo pip install tox
+      - run: tox -e << parameters.to >>
+
+
 jobs:
   py35_unit:
     <<: *py35
     steps:
       - checkout
-      - run:
-          name: py35
-          command: |
-            sudo pip install tox
-            tox -e py35
+      - run_tox:
+          to: "py35"
+
+  testing:
+    <<: *py35
+    steps:
+      - checkout
+      - run_tox:
+          to: "py35"
+
 workflows:
   build_workflow:
     jobs:
+      - testing
       - py35_unit
