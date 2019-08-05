@@ -26,6 +26,12 @@ defaults: &defaults
     - image: circleci/buildpack-deps:xenial-scm
   working_directory: ~/qc-utils
 
+master_only: &master_only
+  filters:
+    branches:
+      only:
+        - master
+
 commands:
 
   run_tox:
@@ -111,6 +117,12 @@ jobs:
       - run_tox:
           toxenv: "coverage-report"
 
+  release_to_pypi:
+    <<: *py37
+    steps:
+      - checkout
+      - run: sudo pip install --upgrade setuptools wheel twine
+      - run: ./release_to_pypi.sh https://upload.pypi.org/legacy/
 
 workflows:
   build_workflow:
