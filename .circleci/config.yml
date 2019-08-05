@@ -12,12 +12,12 @@ py36: &py36
   working_directory: ~/qc-utils
 
 py37: &py37
-  docker: 
+  docker:
     - image: circleci/python:3.7.3-stretch
   working_directory: ~/qc-utils
 
 py38: &py38
-  docker: 
+  docker:
     - image: circleci/python:3.8.0b1-stretch
   working_directory: ~/qc-utils
 
@@ -29,7 +29,6 @@ commands:
     parameters:
       to:
         type: string
-        default: "Hello World"
     steps:
       - run: sudo pip install tox
       - run: tox -e << parameters.to >>
@@ -43,15 +42,33 @@ jobs:
       - run_tox:
           to: "py35"
 
-  testing:
-    <<: *py35
+  py36_unit:
+    <<: *py36
+    steps:
+      - checkout
+      - run: sudo pip install --upgrade setuptools
+      - run_tox:
+          to: "py36"
+
+  py37_unit:
+    <<: *py37
     steps:
       - checkout
       - run_tox:
-          to: "py35"
+          to: "py37"
+
+  py38_unit:
+    <<: *py38
+    steps:
+      - checkout
+      - run_tox:
+          to: "py38"
+
 
 workflows:
   build_workflow:
     jobs:
-      - testing
       - py35_unit
+      - py36_unit
+      - py37_unit
+      - py38_unit
