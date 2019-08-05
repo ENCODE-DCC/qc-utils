@@ -1,33 +1,37 @@
 version: 2.1
 
-machine_defaults: &machine_defaults
-  machine:
-    image: circleci/classic:latest
+py35: &py35
+  docker:
+    - image: circleci/python:3.5.7-stretch
   working_directory: ~/qc-utils
 
-jobs:
-  build:
-    <<: *machine_defaults
+py36: &py36
+  docker:
+    - image: circleci/python:3.6.7-stretch
+  working_directory: ~/qc-utils
 
+py37: &py37
+  docker: 
+    - image: circleci/python:3.7.3-stretch
+  working_directory: ~/qc-utils
+
+py38: &py38
+  docker: 
+    - image: circleci/python:3.8.0b1-stretch
+  working_directory: ~/qc-utils
+
+
+jobs:
+  py35_unit:
+    <<: *py35
     steps:
       - checkout
       - run:
-          name: activate pythos
+          name: py35
           command: |
-            wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-            curl -L https://packagecloud.io/circleci/trusty/gpgkey | sudo apt-key add -
-            sudo apt-get update && sudo apt-get install -y libssl-dev
-            cd /opt/circleci/.pyenv/plugins/python-build/../.. && git pull && cd -
-            pyenv install 3.5.7 
-            pyenv install 3.6.8
-            pyenv install 3.8-dev
-            pyenv install pypy3.6-7.1.0
-            pyenv versions
-            pyenv global 3.5.7 3.6.8 3.8-dev pypy3.6-7.1.0
-            pip install tox tox-pyenv
-            echo "hello!"
-
+            sudo pip install tox
+            tox -e py35
 workflows:
   build_workflow:
     jobs:
-      - build
+      - py35_unit
