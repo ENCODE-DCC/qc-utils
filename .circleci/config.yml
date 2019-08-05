@@ -31,11 +31,11 @@ commands:
   run_tox:
     description: "A very simple command for demonstration purposes"
     parameters:
-      to:
+      toxenv:
         type: string
     steps:
       - run: sudo pip install tox
-      - run: tox -e << parameters.to >>
+      - run: tox -e << parameters.toxenv >>
 
 
 jobs:
@@ -45,35 +45,35 @@ jobs:
     steps:
       - checkout
       - run_tox:
-          to: "lint"
+          toxenv: "lint"
 
   py35_unit:
     <<: *py35
     steps:
       - checkout
       - run_tox:
-          to: "py35"
+          toxenv: "py35"
 
   py36_unit:
     <<: *py36
     steps:
       - checkout
       - run_tox:
-          to: "py36"
+          toxenv: "py36"
 
   py37_unit:
     <<: *py37
     steps:
       - checkout
       - run_tox:
-          to: "py37"
+          toxenv: "py37"
 
   py38_unit:
     <<: *py38
     steps:
       - checkout
       - run_tox:
-          to: "py38"
+          toxenv: "py38"
 
   pypy3_unit:
     <<: *py37
@@ -88,7 +88,14 @@ jobs:
             sudo ln -s $PWD/pypy3.6-7.1.1-beta-linux_x86_64-portable/bin/pypy3.6 /usr/local/bin/pypy3
             pypy3 --version
       - run_tox:
-          to: "pypy3"
+          toxenv: "pypy3"
+
+  docs:
+    <<: *py37
+    steps:
+      - checkout
+      - run_tox:
+          toxenv: "docs"
 
 
 
@@ -101,3 +108,4 @@ workflows:
       - py37_unit
       - py38_unit
       - pypy3_unit
+      - docs
