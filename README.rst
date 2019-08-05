@@ -10,6 +10,10 @@
    :target: https://lbesson.mit-license.org/
    :alt: License: MIT
 
+.. image:: https://circleci.com/gh/ENCODE-DCC/qc-utils.svg?style=svg
+    :target: https://circleci.com/gh/ENCODE-DCC/qc-utils
+    :alt: CircleCI status
+
 .. short-intro-begin
 
 ``qc-utils`` is a python package that provides ``QCMetric`` and ``QCMetricRecord`` classes that can be used for representing ENCODE pipeline quality control metrics.
