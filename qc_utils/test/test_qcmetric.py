@@ -151,3 +151,24 @@ def test_QCMetricRecord_repr(obj_a1, obj_b):
         record.__repr__()
         == "QCMetricRecord([QCMetric('a', OrderedDict([(1, 2)])), QCMetric('b', OrderedDict([(3, 4)]))])"
     )
+
+
+def test_QCMetricRecord_getname():
+    named_record = QCMetricRecord(name="dis_my_name")
+    assert named_record.name == "dis_my_name"
+
+
+def test_QCMetricRecord_setname(qc_record):
+    assert qc_record.name is None
+    qc_record.name = "dis_my_name"
+    assert qc_record.name == "dis_my_name"
+
+
+def test_to_ordered_dict_name_is_set(qc_record, obj_a1, obj_b):
+    qc_record.add(obj_a1)
+    qc_record.add(obj_b)
+    qc_record.name = "dis_my_name"
+    qc_dict = qc_record.to_ordered_dict()
+    assert qc_dict == OrderedDict(
+        [("dis_my_name", OrderedDict([("a", {1: 2}), ("b", {3: 4})]))]
+    )
