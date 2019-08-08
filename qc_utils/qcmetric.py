@@ -147,4 +147,8 @@ class QCMetricRecord(object):
         """
         Like __iter__, __repr__ is delegated to metrics.
         """
-        return "QCMetricRecord(%s)" % self._metrics.__repr__()
+        if self._name is not None:
+            name_repr_token = ", name='%s'" % self._name
+        else:
+            name_repr_token = ""
+        return "QCMetricRecord(%s%s)" % (self._metrics.__repr__(), name_repr_token)
