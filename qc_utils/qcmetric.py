@@ -26,6 +26,13 @@ class QCMetric(object):
     def name(self):
         return self._name
 
+    def to_ordered_dict(self):
+        """Returns an OrderedDict with the contents.
+        Returns: OrderedDict with structure:
+            {self._name: self._content}
+        """
+        return OrderedDict([(self._name, self._content)])
+
     def __len__(self):
         return len(self._content)
 

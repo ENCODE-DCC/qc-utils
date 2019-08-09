@@ -66,6 +66,10 @@ def test_len_1(obj_a1):
     assert len(obj_a1) == 1
 
 
+def test_metric_to_ordered_dict(obj_d):
+    assert obj_d.to_ordered_dict() == OrderedDict([("d", OrderedDict([("a", "b")]))])
+
+
 def test_less_than():
     smaller_obj = QCMetric(1, {})
     bigger_obj = QCMetric(2, {})
@@ -150,6 +154,15 @@ def test_QCMetricRecord_repr(obj_a1, obj_b):
     assert (
         record.__repr__()
         == "QCMetricRecord([QCMetric('a', OrderedDict([(1, 2)])), QCMetric('b', OrderedDict([(3, 4)]))])"
+    )
+
+
+def test_named_QCMetricRecord_repr(obj_a1, obj_b):
+    metrics = [obj_a1, obj_b]
+    record = QCMetricRecord(metrics, name="dis_my_name")
+    assert (
+        record.__repr__()
+        == "QCMetricRecord([QCMetric('a', OrderedDict([(1, 2)])), QCMetric('b', OrderedDict([(3, 4)]))], name='dis_my_name')"
     )
 
 
