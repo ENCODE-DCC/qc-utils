@@ -30,8 +30,9 @@ To create directly from dicts:
     from qc_utils import QCMetric, QCMetricRecord
 
     record = QCMetricRecord()
-    qc_obj = QCMetric('first_metric', {'metric1': 1, 'metric2': 2})
-    record.add(qc_obj)
+    qc_obj1 = QCMetric('first_metric', {'metric1': 1, 'metric2': 2})
+    qc_obj1 = QCMetric('second_metric', {'metric1': 3, 'metric2': 4})
+    record.add_all([qc_obj1, qcobj2])
 
 To create from a STAR log file in ``/path/to/star_Log.out``:
 ::
@@ -48,12 +49,33 @@ To create from a samtools flagstats file in ``/path/to/flagstats.txt`` and write
     import json
     from qc_utils import QCMetric, QCMetricRecord
     from qc_utils.parsers import parse_flagstats
-
-    record = QCMetricRecord()
     flagstat_qc_obj = QCMetric("flagstat", "/path/to/flagstats.txt", parser=parse_flagstats)
-    record.add(flagstat_qc_obj)
     with open("/path/to/flagstats.json", "w") as fp:
+        json.dump(flagstat_qc_obj.to_ordered_dict(), fp)
+
+QCMetricRecord can also have a name, and can be written into ``json`` as follows:
+::
+
+    import json
+    from qc_utils import QCMetric, QCMetricRecord
+    from qc_utils.parsers import parse_flagstats, parse_starlog
+    log_qc_obj = QCMetric("starlogQC", "/path/to/star_Log.out", parser=parse_starlog)
+    flagstat_qc_obj = QCMetric("flagstat", "/path/to/flagstats.txt", parser=parse_flagstats)
+    record = QCMetricRecord([log_qc_obj, flagstat_qc_obj], name="alignment_qc")
+    with open("/path/to/alignment_qc.json", "w") as fp:
         json.dump(record.to_ordered_dict(), fp)
+
+You can combine two QCMetricRecords as follows:
+::
+
+    from qc_utils import QCMetric, QCMetricRecord
+    record1 = QCMetricRecord()
+    record2 = QCMetricRecord()
+    qc_obj1 = QCMetric('first_metric', {'metric1': 1, 'metric2': 2})
+    qc_obj1 = QCMetric('second_metric', {'metric1': 3, 'metric2': 4})
+    record1.add(qc_obj1)
+    record2.add(qc_obj2)
+    record1.add_all(record2)
 
 
 

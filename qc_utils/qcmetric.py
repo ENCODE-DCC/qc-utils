@@ -26,6 +26,13 @@ class QCMetric(object):
     def name(self):
         return self._name
 
+    def to_ordered_dict(self):
+        """Returns an OrderedDict with the contents.
+        Returns: OrderedDict with structure:
+            {self._name: self._content}
+        """
+        return OrderedDict([(self._name, self._content)])
+
     def __len__(self):
         return len(self._content)
 
@@ -46,7 +53,7 @@ class QCMetricRecord(object):
         metrics: list of metrics, kept sorted by the name of metrics
     """
 
-    def __init__(self, metrics=None):
+    def __init__(self, metrics=None, name=None):
         if metrics is None:
             self._metrics = []
         else:
@@ -55,10 +62,19 @@ class QCMetricRecord(object):
             assert len(names) == len(set(names)), "Names of metrics have to be unique"
             self._metrics = metrics[:]
             self._metrics.sort()
+        self._name = name
 
     @property
     def metrics(self):
         return self._metrics
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, name):
+        self._name = name
 
     def add(self, qc_metric):
         """Adds qc metric to the metrics, keeping it sorted by name.
@@ -106,10 +122,20 @@ class QCMetricRecord(object):
                 qc2.name : qc2.content,
                 qc3.name : qc3.content
             }
+            If the self._name is set, then the above output will be changed into
+            {
+                self._name : {
+                                qc1.name : qc1.content,
+                                qc2.name : qc2.content,
+                                qc3.name : qc3.content
+                             }
+            }
         """
         result = OrderedDict()
         for metric in self._metrics:
             result.update({metric.name: metric.content})
+        if self._name is not None:
+            result = OrderedDict([(self._name, result)])
         return result
 
     def __len__(self):
@@ -128,4 +154,8 @@ class QCMetricRecord(object):
         """
         Like __iter__, __repr__ is delegated to metrics.
         """
-        return "QCMetricRecord(%s)" % self._metrics.__repr__()
+        if self._name is not None:
+            name_repr_token = ", name='%s'" % self._name
+        else:
+            name_repr_token = ""
+        return "QCMetricRecord(%s%s)" % (self._metrics.__repr__(), name_repr_token)
