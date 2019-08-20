@@ -19,7 +19,7 @@ Getting Started
 Usage
 =======
 
-The basic pattern is to create ``QCMetric`` objects, and then add related ones to a ``QCMetricRecord``. ``QCMetric`` objects can be created directly from dicts, or from files. Supported parsers are for now for samtools flagstats and for STAR log. You can also write your own: provide a function that takes a filepath as input and returns a dict.
+The basic pattern is to create ``QCMetric`` objects, and then add related ones to a ``QCMetricRecord``. ``QCMetric`` objects can be created from dicts. Supported parsers are for now for samtools flagstats and for STAR log. You can also write your own: provide a function that takes a path to a file as input and returns a dict.
 
 Examples
 ---------
@@ -39,8 +39,9 @@ To create from a STAR log file in ``/path/to/star_Log.out``:
 
     from qc_utils import QCMetric, QCMetricRecord
     from qc_utils.parsers import parse_starlog
+    starlog = parse_starlog("/path/to/star_Log.out")
     record = QCMetricRecord()
-    log_qc_obj = QCMetric("starlogQC", "/path/to/star_Log.out", parser=parse_starlog)
+    log_qc_obj = QCMetric("starlogQC", starlog)
     record.add(log_qc_obj)
 
 To create from a samtools flagstats file in ``/path/to/flagstats.txt`` and write into a ``json``-object in ``/path/to/flagstats.json``:
@@ -49,7 +50,8 @@ To create from a samtools flagstats file in ``/path/to/flagstats.txt`` and write
     import json
     from qc_utils import QCMetric, QCMetricRecord
     from qc_utils.parsers import parse_flagstats
-    flagstat_qc_obj = QCMetric("flagstat", "/path/to/flagstats.txt", parser=parse_flagstats)
+    flagstats = parse_flagstats("/path/to/flagstats.txt")
+    flagstat_qc_obj = QCMetric("flagstat", flagstats)
     with open("/path/to/flagstats.json", "w") as fp:
         json.dump(flagstat_qc_obj.to_ordered_dict(), fp)
 
@@ -59,8 +61,10 @@ QCMetricRecord can also have a name, and can be written into ``json`` as follows
     import json
     from qc_utils import QCMetric, QCMetricRecord
     from qc_utils.parsers import parse_flagstats, parse_starlog
-    log_qc_obj = QCMetric("starlogQC", "/path/to/star_Log.out", parser=parse_starlog)
-    flagstat_qc_obj = QCMetric("flagstat", "/path/to/flagstats.txt", parser=parse_flagstats)
+    starlog = parse_starlog("/path/to/star_Log.out")
+    flagstats = parse_flagstats("/path/to/flagstats.txt")
+    log_qc_obj = QCMetric("starlogQC", starlog)
+    flagstat_qc_obj = QCMetric("flagstat", flagstats)
     record = QCMetricRecord([log_qc_obj, flagstat_qc_obj], name="alignment_qc")
     with open("/path/to/alignment_qc.json", "w") as fp:
         json.dump(record.to_ordered_dict(), fp)
@@ -86,6 +90,7 @@ Table of Contents
    :maxdepth: 2
 
    license
+   changelog
 
 Indices and tables
 ==================
