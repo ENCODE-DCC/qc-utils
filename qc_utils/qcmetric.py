@@ -8,11 +8,8 @@ class QCMetric(object):
     instantiated from a regular dict.
     """
 
-    def __init__(self, qc_metric_name, qc_metric_content, parser=None):
-        if parser is not None:
-            qc_metric_dict = parser(qc_metric_content)
-        else:
-            qc_metric_dict = qc_metric_content
+    def __init__(self, qc_metric_name, qc_metric_content):
+        qc_metric_dict = qc_metric_content
         if not isinstance(qc_metric_dict, dict):
             raise TypeError("QCMetric data must be a dict.")
         self._name = qc_metric_name
