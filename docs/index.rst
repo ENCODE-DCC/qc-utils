@@ -19,7 +19,7 @@ Getting Started
 Usage
 =======
 
-The basic pattern is to create ``QCMetric`` objects, and then add related ones to a ``QCMetricRecord``. ``QCMetric`` objects can be created from dicts. Supported parsers are for now for samtools flagstats and for STAR log. You can also write your own: provide a function that takes a path to a file as input and returns a dict.
+The basic pattern is to create ``QCMetric`` objects, and then add related ones to a ``QCMetricRecord``. ``QCMetric`` objects can be created from dicts. Parsers include STAR metrics and also parsers required to handle the metrics from `ENCODE4 dnase-seq-pipeline <https://github.com/ENCODE-DCC/dnase-seq-pipeline>`_. You can also write your own: provide a function that takes a path to a file as input and returns a dict.
 
 Examples
 ---------

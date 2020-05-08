@@ -33,7 +33,7 @@ def find_meta(meta):
 # -- Project information -----------------------------------------------------
 
 project = "qc-utils"
-copyright = "2018 ENCODE DCC"
+copyright = "2020 ENCODE DCC"
 author = find_meta("author")
 
 # The full version, including alpha/beta/rc tags

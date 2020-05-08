@@ -24,6 +24,26 @@ def percentage_to_float(line):
     return float(line.strip("%"))
 
 
+def try_converting_to_numeric(value):
+    """Try converting to numeric.
+    Attempts to convert to int, and if that fails, to float
+    and as a last resort keep as str.
+    Args:
+        value: str input value from qc
+    Returns:
+        value converted to numeric if applicable.
+    """
+    assert type(value) == str
+    try:
+        converted_value = int(value)
+    except ValueError:
+        try:
+            converted_value = float(value)
+        except ValueError:
+            converted_value = value
+    return converted_value
+
+
 def parse_flagstats(filePath):
     """Parse samtools flagstat file into a dict
     Args:
@@ -102,3 +122,143 @@ def parse_flagstats(filePath):
                 pairs["diff_chroms_qc_failed"] = numbers_type(parts[2])
                 break
     return pairs
+
+
+def parse_key_value_tsv(path_to_tsv, sep=None):
+    """Parse 2-column tsv file with string key, valuetype value into a dict.
+    Args:
+        path_to_tsv: path to file containing the tsv
+        sep: column separator String, default: None (will split on any whitespace)
+    Raises:
+        AssertionError if a row that splits into number of tokens other than 2
+    """
+    qc_dict = {}
+    with open(path_to_tsv) as f:
+        for line in f:
+            tokens = line.split(sep)
+            assert len(tokens) == 2
+            qc_dict[tokens[0]] = try_converting_to_numeric(tokens[1])
+    return qc_dict
+
+
+def parse_illumina_trimstats(path_to_trimstats):
+    """Parse illumina trimstats into a dict.
+    Args:
+        path_to_trimstats: path to file that contains illumina trimstats
+    Returns:
+        dict with trimstats qc metrics
+    Raises:
+        AssertionError if a row that splits into number of tokens other than 2
+        ValueError if some value is not suitable for converting into int
+    """
+    qc_dict = {}
+    with open(path_to_trimstats) as f:
+        rawstats = f.readline()
+    tokens = rawstats.split(";")
+    qc_dict["Total read-pairs processed"] = int(tokens[0].split()[-1])
+    qc_dict["Total read-pairs trimmed"] = int(tokens[1].split()[-1])
+    return qc_dict
+
+
+def parse_bamcounts(path_to_bamcounts):
+    """Parse bamcounts into a dict.
+    Args:
+        path_to_bamcounts: path to file that contains bamcounts/tagcounts
+    Returns:
+        dict with bamcounts qc metrics
+    Raises:
+        AssertionError if a row that splits into number of tokens other than 2
+    """
+    return parse_key_value_tsv(path_to_bamcounts)
+
+
+def parse_preseq_targets(path_to_preseq_targets):
+    """Parse preseq targets into a dict.
+    Args:
+        path_to_preseq_targets: path to file that contains preeq targets
+    Returns:
+        dict with preseq targets qc metrics
+    Raises:
+        AssertionError if a row that splits into number of tokens other than 2
+    """
+    return parse_key_value_tsv(path_to_preseq_targets)
+
+
+def parse_hotspot1_spot_score(path_to_hotspot1_spot_score):
+    """Parse hotspot1 spot score into a dict.
+    Args:
+        path_to_hotspot1_spot_score: path to file that contains hotspot1 spot score
+    Returns:
+        dict with hotspot1 spot score qc metrics
+    """
+    qc_dict = {}
+    with open(path_to_hotspot1_spot_score) as f:
+        next(f)
+        raw_values = f.readline()
+    values = raw_values.strip().split()
+    qc_dict["total tags"] = try_converting_to_numeric(values[0])
+    qc_dict["hotspot tags"] = try_converting_to_numeric(values[1])
+    qc_dict["SPOT"] = try_converting_to_numeric(values[2])
+    return qc_dict
+
+
+def parse_picard_metrics(path_to_metrics):
+    """Parse picard metrics into a dict.
+    Args:
+        path_to_metrics: path to a file that contains picard etrics
+    Returns:
+        dict with picard metrics
+    """
+    qc_dict = {}
+    with open(path_to_metrics) as f:
+        lines = []
+        for _ in range(8):
+            lines.append(f.readline())
+    keys = lines[6].split("\t")
+    values = lines[7].split("\t")
+    keys = [key.strip() for key in keys]
+    values = [value.strip() for value in values]
+    for key, value in zip(keys, values):
+        qc_dict[key] = try_converting_to_numeric(value)
+    return qc_dict
+
+
+def parse_picard_duplication_metrics(path_to_duplication_metrics):
+    """Parse picard duplication metrics into a dict.
+    Args:
+        path_to_duplication_metrics: path to a file that contains picard duplication metrics
+    Returns:
+        dict with picard duplication metrics
+    """
+    return parse_picard_metrics(path_to_duplication_metrics)
+
+
+def parse_picard_insert_size_metrics(path_to_insert_size_metrics):
+    """Parse picard insert size metrics into a dict.
+    Args:
+        path_to_insert_size_metrics: path to a file that contains picard insert size metrics
+    Returns:
+        dict with picard insert size metrics
+    """
+    return parse_picard_metrics(path_to_insert_size_metrics)
+
+
+def parse_insert_size_info(path_to_insert_size_info):
+    return parse_key_value_tsv(path_to_insert_size_info)
+
+
+def parse_samtools_stats(path_to_samtools_stats):
+    """Parse samtools stats metrics into a dict.
+    Args:
+        path_to_samtools_stats: path to a file that contains samtools stats metrics
+    Returns:
+        dict with samtools stats metrics
+    """
+    with open(path_to_samtools_stats) as f:
+        stats_lines = [
+            line.split("\t") for line in f.readlines() if line.startswith("SN")
+        ]
+    qc_dict = {
+        line[1].strip(":"): try_converting_to_numeric(line[2]) for line in stats_lines
+    }
+    return qc_dict
