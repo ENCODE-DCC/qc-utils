@@ -52,8 +52,7 @@ To create from a samtools flagstats file in ``/path/to/flagstats.txt`` and write
     from qc_utils.parsers import parse_flagstats
     flagstats = parse_flagstats("/path/to/flagstats.txt")
     flagstat_qc_obj = QCMetric("flagstat", flagstats)
-    with open("/path/to/flagstats.json", "w") as fp:
-        json.dump(flagstat_qc_obj.to_ordered_dict(), fp)
+    flagstat_qc_obj.save("/path/to/flagstats.json")
 
 QCMetricRecord can also have a name, and can be written into ``json`` as follows:
 ::
@@ -66,8 +65,7 @@ QCMetricRecord can also have a name, and can be written into ``json`` as follows
     log_qc_obj = QCMetric("starlogQC", starlog)
     flagstat_qc_obj = QCMetric("flagstat", flagstats)
     record = QCMetricRecord([log_qc_obj, flagstat_qc_obj], name="alignment_qc")
-    with open("/path/to/alignment_qc.json", "w") as fp:
-        json.dump(record.to_ordered_dict(), fp)
+    record.save("/path/to/alignment_qc.json")
 
 You can combine two QCMetricRecords as follows:
 ::

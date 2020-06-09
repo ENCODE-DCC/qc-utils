@@ -1,3 +1,4 @@
+import json
 from bisect import insort
 from collections import OrderedDict
 
@@ -29,6 +30,22 @@ class QCMetric(object):
             {self._name: self._content}
         """
         return OrderedDict([(self._name, self._content)])
+
+    def save(self, output_filename):
+        """
+        Save the current QCMetric to the path specified by `output_filename`. Calls
+        `self.to_ordered_dict` internally before writing to guarantee key ordering and
+        insert `self._name` if needed.
+
+        Saving multiple times will overwrite existing contents.
+
+        Args:
+            `output_filename`: `str`
+
+        Returns: `None`
+        """
+        with open(output_filename, "w") as fp:
+            json.dump(self.to_ordered_dict(), fp)
 
     def __len__(self):
         return len(self._content)
@@ -134,6 +151,22 @@ class QCMetricRecord(object):
         if self._name is not None:
             result = OrderedDict([(self._name, result)])
         return result
+
+    def save(self, output_filename):
+        """
+        Save the current QCMetricRecord to the path specified by `output_filename`.
+        Calls `self.to_ordered_dict` internally before writing to guarantee consistent
+        key ordering and insert `self._name` if needed.
+
+        Saving multiple times will overwrite existing contents.
+
+        Args:
+            `output_filename`: `str`
+
+        Returns: `None`
+        """
+        with open(output_filename, "w") as fp:
+            json.dump(self.to_ordered_dict(), fp)
 
     def __len__(self):
         """

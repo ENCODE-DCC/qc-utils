@@ -1,3 +1,5 @@
+import builtins
+import json
 from collections import OrderedDict
 
 import pytest
@@ -68,6 +70,13 @@ def test_len_1(obj_a1):
 
 def test_metric_to_ordered_dict(obj_d):
     assert obj_d.to_ordered_dict() == OrderedDict([("d", OrderedDict([("a", "b")]))])
+
+
+def test_QCMetric_save(mocker, obj_a1):
+    mocker.patch("builtins.open", mocker.mock_open())
+    mocker.patch("json.dump")
+    obj_a1.save("foo.json")
+    assert json.dump.call_args[0][0] == obj_a1.to_ordered_dict()
 
 
 def test_less_than():
@@ -175,6 +184,14 @@ def test_QCMetricRecord_setname(qc_record):
     assert qc_record.name is None
     qc_record.name = "dis_my_name"
     assert qc_record.name == "dis_my_name"
+
+
+def test_QCMetricRecord_save(mocker, qc_record, obj_a1):
+    mocker.patch("builtins.open", mocker.mock_open())
+    mocker.patch("json.dump")
+    qc_record.add(obj_a1)
+    qc_record.save("foo.json")
+    assert json.dump.call_args[0][0] == qc_record.to_ordered_dict()
 
 
 def test_to_ordered_dict_name_is_set(qc_record, obj_a1, obj_b):

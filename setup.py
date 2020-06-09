@@ -24,7 +24,7 @@ CLASSIFIERS = [
     "Programming Language :: Python :: Implementation :: CPython",
 ]
 INSTALL_REQUIRES = []
-EXTRAS_REQUIRE = {"docs": ["sphinx"], "tests": ["pytest", "pytest-cov"]}
+EXTRAS_REQUIRE = {"docs": ["sphinx"], "tests": ["pytest", "pytest-cov", "pytest-mock"]}
 EXTRAS_REQUIRE["dev"] = (
     EXTRAS_REQUIRE["docs"] + EXTRAS_REQUIRE["tests"] + ["pre-commit"]
 )
