@@ -1,3 +1,5 @@
+import re
+
 # Parser functions
 
 
@@ -22,6 +24,16 @@ def parse_starlog(path_to_log):
 
 def percentage_to_float(line):
     return float(line.strip("%"))
+
+
+def convert_string_with_commas_to_int(number_string):
+    """Convert string of format xyz,tuv representing an int into an int.
+    Args:
+        number_string: str representing an int
+    Returns:
+        int represented by the number_string
+    """
+    return int(re.sub(",", "", number_string))
 
 
 def try_converting_to_numeric(value):
@@ -261,4 +273,26 @@ def parse_samtools_stats(path_to_samtools_stats):
     qc_dict = {
         line[1].strip(":"): try_converting_to_numeric(line[2]) for line in stats_lines
     }
+    return qc_dict
+
+
+def parse_cutadapt_trimstats(path_to_cutadapt_trimstats):
+    """Parse cutadapt trimstats metrics into a dict.
+    Args:
+        path_to_cutadapt_trimstats: path to a file that contains cutadapt trimstats metrics
+    Returns:
+        dict with cutadapts trimstats metrics
+    """
+    qc_dict = {}
+    with open(path_to_cutadapt_trimstats) as f:
+        trimstats_lines = f.readlines()
+    qc_dict["Total read pairs processed"] = convert_string_with_commas_to_int(
+        trimstats_lines[7].split()[-1]
+    )
+    qc_dict["Read 1 with adapter"] = convert_string_with_commas_to_int(
+        trimstats_lines[8].split()[-2]
+    )
+    qc_dict["Read 2 with adapter"] = convert_string_with_commas_to_int(
+        trimstats_lines[9].split()[-2]
+    )
     return qc_dict

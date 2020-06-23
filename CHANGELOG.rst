@@ -8,4 +8,12 @@ Changelog
 
 20.08.1 (8.5.2020)
 -------------------------
-- Added parsers to handle QC from ENCODE4 dnase-seq-pipeline
+- Added parsers to handle QC from ENCODE4 dnase-seq-pipeline.
+
+20.6.1
+-------------------------
+- Added save method to QCMetric and QCMetricRecord.
+
+20.6.2
+-------------------------
+- Added parser to handle cutadapt trimstats.

@@ -155,6 +155,40 @@ INSERT_SIZE_INFO = """insert-ls-ratio	2983.1667
 insert-ft-eleven	0.0912
 """
 
+CUTADAPT_TRIMSTATS = """This is cutadapt 2.10 with Python 3.6.9
+Command line parameters: -a AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTTAATCTTAGTGTAGATCTCGGTGGTCGCCGTATCATT -A AGATCGGAAGAGCACACGTCTGAACTCCAGTCACGAATTCGTATCTCGTATGCCGTCTTCTGCTTG --cores=1 --pair-filter both --output trim.R1.fastq.gz --paired-output trim.R2.fastq.gz /cromwell-executions/test_trim_adapters_on_fastq_pair/17e8270e-032d-4e3c-a8fb-0fe19403b4ea/call-trim_adapters_on_fastq_pair/trim_adapters_on_fastq_pair/a8d935d2-9fd0-401a-afcf-d3d6b0471438/call-cutadapt/inputs/797577134/r1.fastq.gz /cromwell-executions/test_trim_adapters_on_fastq_pair/17e8270e-032d-4e3c-a8fb-0fe19403b4ea/call-trim_adapters_on_fastq_pair/trim_adapters_on_fastq_pair/a8d935d2-9fd0-401a-afcf-d3d6b0471438/call-cutadapt/inputs/797577134/r2.fastq.gz
+Processing reads on 1 core in paired-end mode ...
+Finished in 6.40 s (48 us/read; 1.25 M reads/minute).
+
+=== Summary ===
+
+Total read pairs processed:            133,435
+  Read 1 with adapter:                  10,359 (7.8%)
+  Read 2 with adapter:                  10,403 (7.8%)
+Pairs written (passing filters):       133,435 (100.0%)
+
+Total basepairs processed:     9,607,320 bp
+  Read 1:     4,803,660 bp
+  Read 2:     4,803,660 bp
+Total written (filtered):      9,483,944 bp (98.7%)
+  Read 1:     4,741,946 bp
+  Read 2:     4,741,998 bp
+
+=== First read: Adapter 1 ===
+
+Sequence: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTTAATCTTAGTGTAGATCTCGGTGGTCGCCGTATCATT; Type: regular 3'; Length: 70; Trimmed: 10359 times
+
+No. of allowed errors:
+0-9 bp: 0; 10-19 bp: 1; 20-29 bp: 2; 30-39 bp: 3; 40-49 bp: 4; 50-59 bp: 5; 60-69 bp: 6; 70 bp: 7
+
+Bases preceding removed adapters:
+  A: 23.0%
+  C: 31.4%
+  G: 33.0%
+  T: 12.5%
+  none/other: 0.0%
+"""
+
 
 @patch("builtins.open", return_value=StringIO(STAR_LOG))
 def test_parse_starlog(mock_open):
@@ -263,3 +297,16 @@ def test_parse_samtools_stats(mock_open):
     assert "percentage of properly paired reads (%)" in stats_dict
     assert stats_dict["error rate"] == 0.003286209
     assert stats_dict["1st fragments"] == 137377422
+
+
+def test_convert_string_with_commas_to_int():
+    assert parsers.convert_string_with_commas_to_int("123,456") == 123456
+    assert parsers.convert_string_with_commas_to_int("123456") == 123456
+
+
+@patch("builtins.open", return_value=StringIO(CUTADAPT_TRIMSTATS))
+def test_parse_cutadapt_trimstats(mock_open):
+    trimstats_dict = parsers.parse_cutadapt_trimstats("path")
+    assert len(trimstats_dict) == 3
+    assert "Total read pairs processed" in trimstats_dict
+    assert trimstats_dict["Read 1 with adapter"] == 10359
