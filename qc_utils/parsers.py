@@ -263,7 +263,7 @@ def parse_picard_duplication_metrics(path_to_duplication_metrics):
         "UNPAIRED_READS_EXAMINED"
     )
     encode_formatted_metrics["Reads Examined"] = (
-        encode_formatted_metrics["Read Pairs Examined"]
+        2 * encode_formatted_metrics["Read Pairs Examined"]
         + encode_formatted_metrics["Unpaired Reads Examined"]
     )
     encode_formatted_metrics["Unmapped Reads"] = raw_metrics.get("UNMAPPED_READS")
@@ -271,7 +271,7 @@ def parse_picard_duplication_metrics(path_to_duplication_metrics):
         "UNPAIRED_READ_DUPLICATES"
     )
     encode_formatted_metrics["Read Duplicates"] = (
-        encode_formatted_metrics["Read Pair Duplicates"]
+        2 * encode_formatted_metrics["Read Pair Duplicates"]
         + encode_formatted_metrics["Unpaired Read Duplicates"]
     )
 
