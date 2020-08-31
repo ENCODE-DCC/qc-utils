@@ -252,7 +252,7 @@ def test_parse_picard_duplication_metrics(mock_open):
     duplication_metrics_dict = parsers.parse_picard_duplication_metrics("path")
     assert len(duplication_metrics_dict) == 10
     assert "Unmapped Reads" in duplication_metrics_dict
-    assert duplication_metrics_dict["Percent duplication"] == 0.174914
+    assert duplication_metrics_dict["Percent Duplication"] == 0.174914
 
 
 def test_try_converting_to_numeric_raises():
@@ -293,9 +293,9 @@ def test_parse_picard_insert_size_metrics(mock_open):
 @patch("builtins.open", return_value=StringIO(SAMTOOLS_STATS))
 def test_parse_samtools_stats(mock_open):
     stats_dict = parsers.parse_samtools_stats("path")
-    assert len(stats_dict) == 31
-    assert "# of properly paired reads" in stats_dict
-    assert stats_dict["Error rate"] == 0.003286209
+    assert len(stats_dict) == 38
+    assert "reads properly paired" in stats_dict
+    assert stats_dict["error rate"] == 0.003286209
     assert stats_dict["1st fragments"] == 137377422
 
 
