@@ -249,7 +249,7 @@ def parse_picard_duplication_metrics(path_to_duplication_metrics):
     encode_formatted_metrics["Estimated Library Size"] = raw_metrics.get(
         "ESTIMATED_LIBRARY_SIZE"
     )
-    encode_formatted_metrics["Percent duplication"] = raw_metrics.get(
+    encode_formatted_metrics["Percent Duplication"] = raw_metrics.get(
         "PERCENT_DUPLICATION"
     )
     encode_formatted_metrics["Read Pair Duplicates"] = raw_metrics.get(
@@ -264,7 +264,7 @@ def parse_picard_duplication_metrics(path_to_duplication_metrics):
     encode_formatted_metrics["Unpaired Reads Examined"] = raw_metrics.get(
         "UNPAIRED_READS_EXAMINED"
     )
-    encode_formatted_metrics["Reads examined"] = (
+    encode_formatted_metrics["Reads Examined"] = (
         encode_formatted_metrics["Read Pairs Examined"]
         + encode_formatted_metrics["Unpaired Reads Examined"]
     )
@@ -272,7 +272,7 @@ def parse_picard_duplication_metrics(path_to_duplication_metrics):
     encode_formatted_metrics["Unpaired Read Duplicates"] = raw_metrics.get(
         "UNPAIRED_READ_DUPLICATES"
     )
-    encode_formatted_metrics["Read duplicates"] = (
+    encode_formatted_metrics["Read Duplicates"] = (
         encode_formatted_metrics["Read Pair Duplicates"]
         + encode_formatted_metrics["Unpaired Read Duplicates"]
     )
@@ -308,62 +308,7 @@ def parse_samtools_stats(path_to_samtools_stats):
     raw_stats = {
         line[1].strip(":"): try_converting_to_numeric(line[2]) for line in stats_lines
     }
-    encode_formatted_stats = {}
-    encode_formatted_stats["1st fragments"] = raw_stats.get("1st fragments")
-    encode_formatted_stats["Average length"] = raw_stats.get("average length")
-    encode_formatted_stats["Average quality"] = raw_stats.get("average quality")
-    encode_formatted_stats["# of bases duplicated"] = raw_stats.get("bases duplicated")
-    encode_formatted_stats["# of bases mapped"] = raw_stats.get("bases mapped")
-    encode_formatted_stats["# of bases mapped (cigar)"] = raw_stats.get(
-        "bases mapped (cigar)"
-    )
-    encode_formatted_stats["# of bases trimmed"] = raw_stats.get("bases trimmed")
-    encode_formatted_stats["Error rate"] = raw_stats.get("error rate")
-    encode_formatted_stats["# of filtered sequences"] = raw_stats.get(
-        "filtered sequences"
-    )
-    encode_formatted_stats["Average insert size"] = raw_stats.get("insert size average")
-    encode_formatted_stats["SD of insert size"] = raw_stats.get(
-        "insert size standard deviation"
-    )
-    encode_formatted_stats["# of inward oriented pairs"] = raw_stats.get(
-        "inward oriented pairs"
-    )
-    encode_formatted_stats["Is sorted flag"] = raw_stats.get("is sorted")
-    encode_formatted_stats["Last fragments"] = raw_stats.get("last fragments")
-    encode_formatted_stats["Maximum length"] = raw_stats.get("maximum length")
-    encode_formatted_stats["# of mismatches"] = raw_stats.get("mismatches")
-    encode_formatted_stats["# of non-primary alignments"] = raw_stats.get(
-        "non-primary alignments"
-    )
-    encode_formatted_stats["# of outward oriented pairs"] = raw_stats.get(
-        "outward oriented pairs"
-    )
-    encode_formatted_stats["# of pairs on diff chr"] = raw_stats.get(
-        "pairs on different chromosomes"
-    )
-    encode_formatted_stats["# pairs with other orientation"] = raw_stats.get(
-        "pairs with other orientation"
-    )
-    encode_formatted_stats["# of total raw sequences"] = raw_stats.get(
-        "raw total sequences"
-    )
-    encode_formatted_stats["# of reads MQ0"] = raw_stats.get("reads MQ0")
-    encode_formatted_stats["# of reads failing QC"] = raw_stats.get("reads QC failed")
-    encode_formatted_stats["# of duplicated reads"] = raw_stats.get("reads duplicated")
-    encode_formatted_stats["# of reads mapped"] = raw_stats.get("reads mapped")
-    encode_formatted_stats["# of reads mapped and paired"] = raw_stats.get(
-        "reads mapped and paired"
-    )
-    encode_formatted_stats["# reads paired"] = raw_stats.get("reads paired")
-    encode_formatted_stats["# of properly paired reads"] = raw_stats.get(
-        "reads properly paired"
-    )
-    encode_formatted_stats["# of unmapped reads"] = raw_stats.get("reads unmapped")
-    encode_formatted_stats["# of sequences"] = raw_stats.get("sequences")
-    encode_formatted_stats["Total length"] = raw_stats.get("total length")
-
-    return encode_formatted_stats
+    return raw_stats 
 
 
 def parse_cutadapt_trimstats(path_to_cutadapt_trimstats):
