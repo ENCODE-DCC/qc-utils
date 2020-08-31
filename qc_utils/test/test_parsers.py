@@ -243,16 +243,16 @@ def test_parse_preseq_targets(mock_open):
 def test_parse_hotspot1_spot_score(mock_open):
     spot_score_dict = parsers.parse_hotspot1_spot_score("path")
     assert len(spot_score_dict) == 3
-    assert spot_score_dict["hotspot tags"] == 2209334
-    assert spot_score_dict["SPOT"] == 0.4418
+    assert spot_score_dict["# of read tags that were in hotspots"] == 2209334
+    assert spot_score_dict["SPOT1 score"] == 0.4418
 
 
 @patch("builtins.open", return_value=StringIO(PICARD_DUPLICATION_METRICS))
 def test_parse_picard_duplication_metrics(mock_open):
     duplication_metrics_dict = parsers.parse_picard_duplication_metrics("path")
     assert len(duplication_metrics_dict) == 10
-    assert "UNMAPPED_READS" in duplication_metrics_dict
-    assert duplication_metrics_dict["PERCENT_DUPLICATION"] == 0.174914
+    assert "Unmapped Reads" in duplication_metrics_dict
+    assert duplication_metrics_dict["Percent duplication"] == 0.174914
 
 
 def test_try_converting_to_numeric_raises():
@@ -293,9 +293,9 @@ def test_parse_picard_insert_size_metrics(mock_open):
 @patch("builtins.open", return_value=StringIO(SAMTOOLS_STATS))
 def test_parse_samtools_stats(mock_open):
     stats_dict = parsers.parse_samtools_stats("path")
-    assert len(stats_dict) == 38
-    assert "percentage of properly paired reads (%)" in stats_dict
-    assert stats_dict["error rate"] == 0.003286209
+    assert len(stats_dict) == 31
+    assert "# of properly paired reads" in stats_dict
+    assert stats_dict["Error rate"] == 0.003286209
     assert stats_dict["1st fragments"] == 137377422
 
 
