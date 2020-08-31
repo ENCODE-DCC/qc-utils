@@ -243,8 +243,8 @@ def test_parse_preseq_targets(mock_open):
 def test_parse_hotspot1_spot_score(mock_open):
     spot_score_dict = parsers.parse_hotspot1_spot_score("path")
     assert len(spot_score_dict) == 3
-    assert spot_score_dict["# of read tags that were in hotspots"] == 2209334
-    assert spot_score_dict["SPOT1 score"] == 0.4418
+    assert spot_score_dict["hotspot_tags"] == 2209334
+    assert spot_score_dict["spot1_score"] == 0.4418
 
 
 @patch("builtins.open", return_value=StringIO(PICARD_DUPLICATION_METRICS))

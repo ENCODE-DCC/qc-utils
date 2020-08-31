@@ -208,11 +208,9 @@ def parse_hotspot1_spot_score(path_to_hotspot1_spot_score):
         next(f)
         raw_values = f.readline()
     values = raw_values.strip().split()
-    qc_dict["# of read tags provided"] = try_converting_to_numeric(values[0])
-    qc_dict["# of read tags that were in hotspots"] = try_converting_to_numeric(
-        values[1]
-    )
-    qc_dict["SPOT1 score"] = try_converting_to_numeric(values[2])
+    qc_dict["total_tags"] = try_converting_to_numeric(values[0])
+    qc_dict["hotspot_tags"] = try_converting_to_numeric(values[1])
+    qc_dict["spot1_score"] = try_converting_to_numeric(values[2])
     return qc_dict
 
 
