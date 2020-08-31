@@ -308,7 +308,7 @@ def parse_samtools_stats(path_to_samtools_stats):
     raw_stats = {
         line[1].strip(":"): try_converting_to_numeric(line[2]) for line in stats_lines
     }
-    return raw_stats 
+    return raw_stats
 
 
 def parse_cutadapt_trimstats(path_to_cutadapt_trimstats):
