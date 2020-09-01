@@ -289,7 +289,15 @@ def parse_picard_insert_size_metrics(path_to_insert_size_metrics):
 
 
 def parse_insert_size_info(path_to_insert_size_info):
-    return parse_key_value_tsv(path_to_insert_size_info)
+    raw_insert_size_info = parse_key_value_tsv(path_to_insert_size_info)
+    encode_formatted_insert_size_info = {}
+    encode_formatted_insert_size_info[
+        "fourier_transform_eleven"
+    ] = raw_insert_size_info["insert-ft-eleven"]
+    encode_formatted_insert_size_info["large_small_ratio"] = raw_insert_size_info[
+        "insert-ls-ratio"
+    ]
+    return encode_formatted_insert_size_info
 
 
 def parse_samtools_stats(path_to_samtools_stats):

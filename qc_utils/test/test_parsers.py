@@ -276,8 +276,8 @@ def test_try_converting_to_numeric_str():
 def test_parse_insert_size_info(mock_open):
     insert_size_info_dict = parsers.parse_insert_size_info("path")
     assert len(insert_size_info_dict) == 2
-    assert "insert-ft-eleven" in insert_size_info_dict
-    assert insert_size_info_dict["insert-ls-ratio"] == 2983.1667
+    assert "fourier_transform_eleven" in insert_size_info_dict
+    assert insert_size_info_dict["large_small_ratio"] == 2983.1667
 
 
 @patch("builtins.open", return_value=StringIO(PICARD_INSERT_SIZE_METRICS))
